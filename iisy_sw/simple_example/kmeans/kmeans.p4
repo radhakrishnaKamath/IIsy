@@ -77,10 +77,24 @@ struct metadata {
     bit<32>  action_select1;
     bit<32> action_select2;
     bit<32> classification;
-    bit<16> distancex;
-    bit<16> distancey;
-    bit<32> x;
-    bit<32> y;
+    bit<16> distance1;
+    bit<16> distance2;
+    bit<16> distance3;
+    bit<16> distance4;
+    bit<16> distance5;
+    bit<16> distance6;
+    bit<16> distance7;
+    bit<16> distance8;
+    bit<16> distance9;
+    bit<32> a;
+    bit<32> b;
+    bit<32> c;
+    bit<32> d;
+    bit<32> e;
+    bit<32> f;
+    bit<32> g;
+    bit<32> h;
+    bit<32> i;
 }
 
 struct headers {
@@ -150,71 +164,248 @@ control MyIngress(inout headers hdr,
     }
 
 
-action set_distancex(bit<32> square){
-    meta.x =  square;
-}
-action set_distancey(bit<32> square ){
-    meta.y =  square;
-}
+    action set_distance1(bit<32> square){
+        meta.a =  square;
+    }
+    action set_distance2(bit<32> square ){
+        meta.b =  square;
+    }
+    action set_distance3(bit<32> square){
+        meta.c =  square;
+    }
+    action set_distance4(bit<32> square ){
+        meta.d =  square;
+    }
+    action set_distance5(bit<32> square){
+        meta.e =  square;
+    }
+    action set_distance6(bit<32> square ){
+        meta.f =  square;
+    }
+    action set_distance7(bit<32> square){
+        meta.g =  square;
+    }
+    action set_distance8(bit<32> square ){
+        meta.h =  square;
+    }
+    action set_distance9(bit<32> square){
+        meta.i =  square;
+    }
 
 
-
-table class1_exactx {
-    key = {
-        meta.distancex: exact;
+    table class1_exact1 {
+        key = {
+            meta.distance1: exact;
         }
         actions = {
             NoAction;
-            set_distancex;
-                }
-                    size = 65535;
-}
+            set_distance1;
+        }
+        size = 65535;
+    }
 
-table class1_exacty {
-    key = {
-    meta.distancey: exact;
+    table class1_exact2 {
+        key = {
+            meta.distance2: exact;
         }
         actions = {
             NoAction;
-            set_distancey;
-            }
-                size = 65535;
-}
+            set_distance2;
+        }
+        size = 65535;
+    }
 
-table class2_exactx {
-    key = {
-    meta.distancex: exact;
+    table class1_exact3 {
+        key = {
+            meta.distance3: exact;
         }
         actions = {
             NoAction;
-            set_distancex;
-                }
-                    size = 65535;
-}
+            set_distance3;
+        }
+        size = 65535;
+    }
 
-table class2_exacty {
-    key = {
-    meta.distancey: exact;
+    table class1_exact4 {
+        key = {
+            meta.distance4: exact;
         }
         actions = {
             NoAction;
-            set_distancey;
-            }
-                size = 65535;
-}
+            set_distance4;
+        }
+        size = 65535;
+    }
+
+    table class1_exact5 {
+        key = {
+            meta.distance5: exact;
+        }
+        actions = {
+            NoAction;
+            set_distance5;
+        }
+        size = 65535;
+    }
+
+    table class1_exact6 {
+        key = {
+            meta.distance6: exact;
+        }
+        actions = {
+            NoAction;
+            set_distance6;
+        }
+        size = 65535;
+    }
+
+    table class1_exact7 {
+        key = {
+            meta.distance7: exact;
+        }
+        actions = {
+            NoAction;
+            set_distance7;
+        }
+        size = 65535;
+    }
+
+    table class1_exact8 {
+        key = {
+            meta.distance8: exact;
+        }
+        actions = {
+            NoAction;
+            set_distance8;
+        }
+        size = 65535;
+    }
+
+    table class1_exact9 {
+        key = {
+            meta.distance9: exact;
+        }
+        actions = {
+            NoAction;
+            set_distance9;
+        }
+        size = 65535;
+    }
+
+    table class2_exact1 {
+        key = {
+            meta.distance1: exact;
+        }
+        actions = {
+            NoAction;
+            set_distance1;
+        }
+        size = 65535;
+    }
+
+    table class2_exact2 {
+        key = {
+            meta.distance2: exact;
+        }
+
+        actions = {
+            NoAction;
+            set_distance2;
+        }
+        size = 65535;
+    }
     
-    
+    table class2_exact3 {
+        key = {
+            meta.distance3: exact;
+        }
+        actions = {
+            NoAction;
+            set_distance3;
+        }
+        size = 65535;
+    }
+
+    table class2_exact4 {
+        key = {
+            meta.distance4: exact;
+        }
+
+        actions = {
+            NoAction;
+            set_distance4;
+        }
+        size = 65535;
+    }
+
+    table class2_exact5 {
+        key = {
+            meta.distance5: exact;
+        }
+        actions = {
+            NoAction;
+            set_distance5;
+        }
+        size = 65535;
+    }
+
+    table class2_exact6 {
+        key = {
+            meta.distance6: exact;
+        }
+
+        actions = {
+            NoAction;
+            set_distance6;
+        }
+        size = 65535;
+    }
+
+    table class2_exact7 {
+        key = {
+            meta.distance7: exact;
+        }
+        actions = {
+            NoAction;
+            set_distance7;
+        }
+        size = 65535;
+    }
+
+    table class2_exact8 {
+        key = {
+            meta.distance8: exact;
+        }
+
+        actions = {
+            NoAction;
+            set_distance8;
+        }
+        size = 65535;
+    }
+
+    table class2_exact9 {
+        key = {
+            meta.distance9: exact;
+        }
+        actions = {
+            NoAction;
+            set_distance9;
+        }
+        size = 65535;
+    }
+
     table ipv4_exact {
         key = {
             meta.classification: exact;
-}
+        }
     
-    actions = {
-        ipv4_forward;
+        actions = {
+            ipv4_forward;
             drop;
-                NoAction;
-}
-    size = 1024;
+            NoAction;
+        }
+        size = 1024;
         default_action = drop();
     }
 

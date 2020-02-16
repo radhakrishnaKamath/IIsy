@@ -65,6 +65,10 @@ Set1 = pd.read_csv(input)
 Set = Set1.values.tolist()
 X = [i[0:3] for i in Set]
 Y =[i[3] for i in Set]
+for i in range(0,len(Y)):
+	if i%2 == 0:
+		Y[i] = 1
+
 class_names=['iperf','memcached','ping','sparkglm','sparkkmeans']
 feature_names=['proto','src','dst']
 
@@ -76,7 +80,9 @@ Yt =[i[3] for i in Set]
 
 # prepare training and testing set
 X = np.array(X)
+print(X)
 Y = np.array(Y)
+print(Y)
 Xt = np.array(Xt)
 Yt = np.array(Yt)
 

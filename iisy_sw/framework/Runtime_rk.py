@@ -53,26 +53,32 @@ def find_action(textfile):
 
 # read the tree model, search the threshold value
 def find_feature(textfile):
-    f = open(textfile)
-    line = f.readline()
-    proto = re.findall('\d+', line)
-    line = f.readline()
-    tcp_src = re.findall('\d+', line)
-    line = f.readline()
-    tcp_dst = re.findall('\d+', line)
-    line = f.readline()
-    udp_src = re.findall('\d+', line)
-    line = f.readline()
-    udp_dst = re.findall('\d+', line)
-    line = f.readline()
-    tcp_flags = re.findall('\d+', line)
-    line = f.readline()
-    ether_type = re.findall('\d+', line)
-    line = f.readline()
-    flags = re.findall('\d+', line)
-    line = f.readline()
-    size = re.findall('\d+', line)
-
+    fea = []
+    proto = []
+    tcp_src = []
+    tcp_dst = []
+    udp_src = []
+    udp_dst = []
+    tcp_flags = []
+    ether_type = []
+    flags = []
+    size = []
+    f = open(textfile,'r')
+    for line in f:
+        line_ele = line.split(" ")
+        line_val = line_ele[3].split("(")
+        line_val1 = line_val[1].split(")")
+        centers = line_val1[0].split(",")
+        centers.pop(-1)
+        proto.append(centers[0])
+        tcp_src.append(centers[1])
+        tcp_dst.append(centers[2])
+        udp_src.append(centers[3])
+        udp_dst.append(centers[4])
+        tcp_flags.append(centers[5])
+        ether_type.append(centers[6])
+        flags.append(centers[7])
+        size.append(centers[8])
     f.close
     proto = [int(i) for i in proto]
     tcp_src = [int(i) for i in tcp_src]
@@ -86,16 +92,9 @@ def find_feature(textfile):
     return proto,tcp_src,tcp_dst,udp_src,udp_dst,tcp_flags,ether_type,flags,size
 
 def find_cluster(textfile,proto,tcp_src,tcp_dst,udp_src,udp_dst,tcp_flags,ether_type,flags,size):
-     fea = []
+        
+    # print(centers)
 
-     f = open(textfile,'r')
-     for line in f:
-        line_ele = line.split(" ")
-        line_val = line_ele[3].split("(")
-        line_val1 = line_val[1].split(")")
-        centers = line_val1[0].split(",")
-        centers.pop(-1)
-        # print(centers)
         
         
 
@@ -193,11 +192,11 @@ def get_actionpara(action):
     if action == 0 :
         para = {}
     elif action == 2:
-        para = {'dstAddr': '00:00:00:02:02:00','port': 2}
+        para = {'dstAddr': '00:00:00:02:02:22','port': 2}
     elif action == 3:
-        para = {'dstAddr': '00:00:00:03:03:00','port': 3}
+        para = {'dstAddr': '00:00:00:03:03:33','port': 3}
     elif action == 4:
-        para = {'dstAddr': '00:00:00:04:04:00','port': 4}
+        para = {'dstAddr': '00:00:00:04:04:44','port': 4}
 
     return para
 
@@ -231,11 +230,11 @@ def write_ingress(file,a,b,c,action,port):
     file.write(jsondata)
     file.write(",\n")
 
-# write the entries for feature1 table
-def write_feature1(file,a,ind):
-    data = {'table':'MyIngress.feature1_exact',
-            'match': { 'hdr.ipv4.protocol': a},
-            'action_name':'MyIngress.set_actionselect1',
+# write the entries for class1_exact1 table
+def write_class1_exact1(file,a,ind):
+    data = {'table':'MyIngress.class1_exact1',
+            'match': { 'meta.distance1': a},
+            'action_name':'MyIngress.set_distance1',
             'action_params':{'featurevalue1':ind}
             }
 
@@ -244,11 +243,11 @@ def write_feature1(file,a,ind):
     file.write(jsondata)
     file.write(",\n")
 
-# write the entries for feature 2 table
-def write_feature2(file,a,ind):
-    data = {'table':'MyIngress.feature2_exact',
-            'match': { 'hdr.tcp.srcPort': a},
-            'action_name':'MyIngress.set_actionselect2',
+# write the entries for class1_exact2 table
+def write_class1_exact2(file,a,ind):
+    data = {'table':'MyIngress.class1_exact2',
+            'match': { 'meta.distance2': a},
+            'action_name':'MyIngress.set_distance2',
             'action_params':{'featurevalue2':ind}
             }
 
@@ -257,12 +256,207 @@ def write_feature2(file,a,ind):
     file.write(jsondata)
     file.write(",\n")
 
-# write the entries for feature 3 table
-def write_feature3(file,a,ind):
-    data = {'table':'MyIngress.feature3_exact',
-            'match': { 'hdr.tcp.dstPort': a},
-            'action_name':'MyIngress.set_actionselect3',
+# write the entries for class1_exact3 table
+def write_class1_exact3(file,a,ind):
+    data = {'table':'MyIngress.class1_exact3',
+            'match': { 'meta.distance3': a},
+            'action_name':'MyIngress.set_distance3',
             'action_params':{'featurevalue3':ind}
+            }
+
+    jsondata =json.dumps(data,
+                      indent=4, ensure_ascii=False)
+    file.write(jsondata)
+    file.write(",\n")
+
+# write the entries for class1_exact4 table
+def write_class1_exact4(file,a,ind):
+    data = {'table':'MyIngress.class1_exact4',
+            'match': { 'meta.distance4': a},
+            'action_name':'MyIngress.set_distance4',
+            'action_params':{'featurevalue4':ind}
+            }
+
+    jsondata =json.dumps(data,
+                      indent=4, ensure_ascii=False)
+    file.write(jsondata)
+    file.write(",\n")
+
+# write the entries for class1_exact5 table
+def write_class1_exact5(file,a,ind):
+    data = {'table':'MyIngress.class1_exact5',
+            'match': { 'meta.distance5': a},
+            'action_name':'MyIngress.set_distance5',
+            'action_params':{'featurevalue5':ind}
+            }
+
+    jsondata =json.dumps(data,
+                      indent=4, ensure_ascii=False)
+    file.write(jsondata)
+    file.write(",\n")
+
+# write the entries for class1_exact6 table
+def write_class1_exact6(file,a,ind):
+    data = {'table':'MyIngress.class1_exact6',
+            'match': { 'meta.distance6': a},
+            'action_name':'MyIngress.set_distance6',
+            'action_params':{'featurevalue6':ind}
+            }
+
+    jsondata =json.dumps(data,
+                      indent=4, ensure_ascii=False)
+    file.write(jsondata)
+    file.write(",\n")
+
+# write the entries for class1_exact7 table
+def write_class1_exact7(file,a,ind):
+    data = {'table':'MyIngress.class1_exact7',
+            'match': { 'meta.distance7': a},
+            'action_name':'MyIngress.set_distance7',
+            'action_params':{'featurevalue7':ind}
+            }
+
+    jsondata =json.dumps(data,
+                      indent=4, ensure_ascii=False)
+    file.write(jsondata)
+    file.write(",\n")
+
+# write the entries for class1_exact8 table
+def write_class1_exact8(file,a,ind):
+    data = {'table':'MyIngress.class1_exact8',
+            'match': { 'meta.distance8': a},
+            'action_name':'MyIngress.set_distance8',
+            'action_params':{'featurevalue8':ind}
+            }
+
+    jsondata =json.dumps(data,
+                      indent=4, ensure_ascii=False)
+    file.write(jsondata)
+    file.write(",\n")
+
+# write the entries for class1_exact9 table
+def write_class1_exact9(file,a,ind):
+    data = {'table':'MyIngress.class1_exact9',
+            'match': { 'meta.distance9': a},
+            'action_name':'MyIngress.set_distance9',
+            'action_params':{'featurevalue9':ind}
+            }
+
+    jsondata =json.dumps(data,
+                      indent=4, ensure_ascii=False)
+    file.write(jsondata)
+    file.write(",\n")
+
+# write the entries for class2_exact1 table
+def write_class2_exact1(file,a,ind):
+    data = {'table':'MyIngress.class2_exact1',
+            'match': { 'meta.distance1': a},
+            'action_name':'MyIngress.set_distance1',
+            'action_params':{'featurevalue1':ind}
+            }
+
+    jsondata =json.dumps(data,
+                      indent=4, ensure_ascii=False)
+    file.write(jsondata)
+    file.write(",\n")
+
+# write the entries for class2_exact2 table
+def write_class2_exact2(file,a,ind):
+    data = {'table':'MyIngress.class2_exact2',
+            'match': { 'meta.distance2': a},
+            'action_name':'MyIngress.set_distance2',
+            'action_params':{'featurevalue2':ind}
+            }
+
+    jsondata =json.dumps(data,
+                      indent=4, ensure_ascii=False)
+    file.write(jsondata)
+    file.write(",\n")
+
+# write the entries for class2_exact3 table
+def write_class2_exact3(file,a,ind):
+    data = {'table':'MyIngress.class2_exact3',
+            'match': { 'meta.distance3': a},
+            'action_name':'MyIngress.set_distance3',
+            'action_params':{'featurevalue3':ind}
+            }
+
+    jsondata =json.dumps(data,
+                      indent=4, ensure_ascii=False)
+    file.write(jsondata)
+    file.write(",\n")
+
+# write the entries for class2_exact4 table
+def write_class2_exact4(file,a,ind):
+    data = {'table':'MyIngress.class2_exact4',
+            'match': { 'meta.distance4': a},
+            'action_name':'MyIngress.set_distance4',
+            'action_params':{'featurevalue4':ind}
+            }
+
+    jsondata =json.dumps(data,
+                      indent=4, ensure_ascii=False)
+    file.write(jsondata)
+    file.write(",\n")
+
+# write the entries for class2_exact5 table
+def write_class2_exact5(file,a,ind):
+    data = {'table':'MyIngress.class2_exact5',
+            'match': { 'meta.distance5': a},
+            'action_name':'MyIngress.set_distance5',
+            'action_params':{'featurevalue5':ind}
+            }
+
+    jsondata =json.dumps(data,
+                      indent=4, ensure_ascii=False)
+    file.write(jsondata)
+    file.write(",\n")
+
+# write the entries for class2_exact6 table
+def write_class2_exact6(file,a,ind):
+    data = {'table':'MyIngress.class2_exact6',
+            'match': { 'meta.distance6': a},
+            'action_name':'MyIngress.set_distance6',
+            'action_params':{'featurevalue6':ind}
+            }
+
+    jsondata =json.dumps(data,
+                      indent=4, ensure_ascii=False)
+    file.write(jsondata)
+    file.write(",\n")
+
+# write the entries for class2_exact7 table
+def write_class2_exact7(file,a,ind):
+    data = {'table':'MyIngress.class2_exact7',
+            'match': { 'meta.distance7': a},
+            'action_name':'MyIngress.set_distance7',
+            'action_params':{'featurevalue7':ind}
+            }
+
+    jsondata =json.dumps(data,
+                      indent=4, ensure_ascii=False)
+    file.write(jsondata)
+    file.write(",\n")
+
+# write the entries for class2_exact8 table
+def write_class2_exact8(file,a,ind):
+    data = {'table':'MyIngress.class2_exact8',
+            'match': { 'meta.distance8': a},
+            'action_name':'MyIngress.set_distance8',
+            'action_params':{'featurevalue8':ind}
+            }
+
+    jsondata =json.dumps(data,
+                      indent=4, ensure_ascii=False)
+    file.write(jsondata)
+    file.write(",\n")
+
+# write the entries for class2_exact9 table
+def write_class2_exact9(file,a,ind):
+    data = {'table':'MyIngress.class2_exact9',
+            'match': { 'meta.distance9': a},
+            'action_name':'MyIngress.set_distance9',
+            'action_params':{'featurevalue9':ind}
             }
 
     jsondata =json.dumps(data,
@@ -316,9 +510,9 @@ if len(proto)!= 0:
     proto.append(32)
     proto.sort()
     for i in range(len(proto)-1):
-        write_feature1(runtime, proto[i:i + 2], i+1)
+        write_class1_exactx(runtime, proto[i:i + 2], i+1)
 else:
-    write_feature1(runtime,[0,32],1)
+    write_class1_exactx(runtime,,1)
 #parameter in feature 2 table
 if len(tcp_src) != 0:
     tcp_src.append(0)
@@ -340,6 +534,3 @@ write_ingress_default(runtime)
 
 runtime.write("] \n  }")
 runtime.close()
-
-
-
