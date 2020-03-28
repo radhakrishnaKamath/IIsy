@@ -57,78 +57,68 @@ for packet in all_packets:
         proto = packet.proto
     except AttributeError:
         proto = 0
-    try:
-        src_ip = packet['IP'].src
-        # print(src_ip)
-    except AttributeError:
-        src_ip = "0.0.0.0"
-    try:
-        dst_ip = packet['IP'].dst
-    except AttributeError:
-        dst_ip = "0.0.0.0"
-    try:
-        sport = packet.sport
-    except AttributeError:
-        sport = 0
-    try:
-        dport = packet.dport
-    except AttributeError:
-        dport = 0
-
     proto = int(proto)
+    try:
+        eth_type = packet.type 
+    except AttributeError:
+        eth_type = 0
+    eth_type = int(eth_type)
+    if eth_type == 2048:
+        try:
+            src_ip = packet['IP'].src
+        except AttributeError:
+            src_ip = "0.0.0.0"
+        try:
+            dst_ip = packet['IP'].dst
+        except AttributeError:
+            dst_ip = "0.0.0.0"
+
+    if proto==6 or proto==17:
+        try:
+            sport = packet.sport
+        except AttributeError:
+            sport = 0
+        try:
+            dport = packet.dport
+        except AttributeError:
+            dport = 0
+
     src_ip = str(src_ip)
     dst_ip = str(dst_ip)
     sport = int(sport)
     dport = int(dport)
+    
     flag = 0
-    if len(results)!=0:
-        for i in range(0,len(results)):
-            # print("0: " + src_ip + " " + results[i][0])
-            if src_ip == results[i][0]:
-                # print("1: " + dst_ip + " " + results[i][1])
-                if dst_ip == results[i][1]:
-                    # print("2: " + str(i[2]))
-                    if sport == results[i][2]:
-                        # print("3: " + str(i[3]))
-                        if dport == results[i][3]:
-                            # print("4: " + str(i[4]))
-                            if proto == results[i][4]:
-                                print("5_1: " + str(results[i][5]))
-                                results[i][5] = results[i][5] + size
-                                print("5_2: " + str(results[i][5]))
-                                flag = 1
-                                break
+    if eth_type==2048:
+        if len(results)!=0:
+            for i in range(0,len(results)):
+                if src_ip == results[i][0]:
+                    if dst_ip == results[i][1]:
+                        if proto==6 or proto==17:
+                            if sport == results[i][2]:
+                                if dport == results[i][3]:
+                                    if proto == results[i][4]:
+                                        # print("5_1: " + str(results[i][5]))
+                                        results[i][5] = results[i][5] + size
+                                        # print("5_2: " + str(results[i][5]))
+                                        flag = 1
+                                        break
+                                    else:
+                                        continue
+                                else:
+                                    continue
                             else:
-                                # print("proto didn't match for i: " + str(i))
                                 continue
-                                # metric = [src_ip,dst_ip,sport,dport,proto,size]
-                                # results.append(metric)
-                        else:
-                            # print("dport didn't match for i: " + str(i))
-                            continue
-                            # metric = [src_ip,dst_ip,sport,dport,proto,size]
-                            # results.append(metric)
                     else:
-                        # print("sport didn't match for i: " + str(i))
                         continue
-                        # metric = [src_ip,dst_ip,sport,dport,proto,size]
-                        # results.append(metric)
                 else:
-                    # print("dst_ip didn't match for i: " + str(i))
                     continue
-                    # metric = [src_ip,dst_ip,sport,dport,proto,size]
-                    # results.append(metric)
-            else:
-                # print("src_ip didn't match for i: " + str(i))
-                continue
-                # metric = [src_ip,dst_ip,sport,dport,proto,size]
-                # results.append(metric)
-        if flag == 0:
+            if flag == 0:
+                metric = [src_ip,dst_ip,sport,dport,proto,size]
+                results.append(metric)
+        else:
             metric = [src_ip,dst_ip,sport,dport,proto,size]
             results.append(metric)
-    else:
-        metric = [src_ip,dst_ip,sport,dport,proto,size]
-        results.append(metric)
 
 results = (np.array(results)).T
 
