@@ -36,19 +36,21 @@ parser = argparse.ArgumentParser()
 # Add argument
 parser.add_argument('-i', required=True, help='path to dataset')
 parser.add_argument('-o', required=True, help='output path')
-parser.add_argument('-c', required=True, help='classification')
 args = parser.parse_args()
 
 # extract argument value
 inputfile = args.i
 outputfile = args.o
-classification =int(args.c)
 
 
 #read the pcap file and extract the features for each packet
 results = []
 all_packets = rdpcap(inputfile)
 for packet in all_packets:
+    try:
+        ihl = packet.ihl
+    except AttributeError:
+        ihl = 5
     try:
         size = packet.len
     except AttributeError:
@@ -92,15 +94,15 @@ for packet in all_packets:
     if eth_type==2048:
         if len(results)!=0:
             for i in range(0,len(results)):
-                if src_ip == results[i][0]:
-                    if dst_ip == results[i][1]:
-                        if proto==6 or proto==17:
-                            if sport == results[i][2]:
-                                if dport == results[i][3]:
-                                    if proto == results[i][4]:
-                                        # print("5_1: " + str(results[i][5]))
-                                        results[i][5] = results[i][5] + size
-                                        # print("5_2: " + str(results[i][5]))
+                if src_ip == results[i][1]:
+                    if dst_ip == results[i][2]:
+                        if proto==6:
+                            if sport == results[i][3]:
+                                if dport == results[i][4]:
+                                    if proto == results[i][7]:
+                                        size = size - (ihl*4 + 20)
+                                        results[i][8] = results[i][8] + size
+                                        results[i][9] = results[i][9] + 1
                                         flag = 1
                                         break
                                     else:
@@ -109,27 +111,50 @@ for packet in all_packets:
                                     continue
                             else:
                                 continue
+                        elif proto==17:
+                            if sport == results[i][5]:
+                                if dport == results[i][6]:
+                                    if proto == results[i][7]:
+                                        size = size - (ihl*4 + 8)
+                                        results[i][8] = results[i][8] + size
+                                        results[i][9] = results[i][9] + 1
+                                        flag = 1
+                                        break
+                                    else:
+                                        continue
+                                else:
+                                    continue
+                            else:
+                                continue
+                        else:
+                            continue
                     else:
                         continue
                 else:
                     continue
             if flag == 0:
-                metric = [src_ip,dst_ip,sport,dport,proto,size]
+                if proto == 6:
+                    metric = [eth_type,src_ip,dst_ip,sport,dport,0,0,proto,size,1]
+                elif proto == 17:
+                    metric = [eth_type,src_ip,dst_ip,0,0,sport,dport,proto,size,1]
                 results.append(metric)
         else:
-            metric = [src_ip,dst_ip,sport,dport,proto,size]
+            if proto == 6:
+                metric = [eth_type,src_ip,dst_ip,sport,dport,0,0,proto,size,1]
+            elif proto == 17:
+                metric = [eth_type,src_ip,dst_ip,0,0,sport,dport,proto,size,1]
             results.append(metric)
 
-results = (np.array(results)).T
+results = (np.array(results))
 
 # store the features in the dataframe
-dataframe = pd.DataFrame({'src_ip':results[0],'dst_ip':results[1],'sport':results[2],'dport':results[3],'proto':results[4],'size':results[5]})
-columns = ['src_ip','dst_ip','sport','dport','proto','size']
 
-# save the dataframe to the csv file, if not exsit, create one.
-if os.path.exists(outputfile):
-    dataframe.to_csv(outputfile,index=False,sep=',',mode='a',columns = columns, header=False)
-else:
-    dataframe.to_csv(outputfile,index=False,sep=',',columns = columns)
-
-
+columns = ['ether_type','src_ip','dst_ip','tcp_sport','tcp_dport','udp_sport','udp_dport','proto','size','count','class']
+for i in results:
+    print(str(i[0]))
+    dataframe = pd.DataFrame({'ether_type':[i[0]],'src_ip':[i[1]],'dst_ip':[i[2]],'tcp_sport':[i[3]],'tcp_dport':[i[4]],'udp_sport':[i[5]],'udp_dport':[i[6]],'proto':[i[7]],'size':[i[8]],'count':[i[9]],'class':0})
+    # save the dataframe to the csv file, if not exsit, create one.
+    if os.path.exists(outputfile):
+        dataframe.to_csv(outputfile,index=False,sep=',',mode='a',columns = columns, header=False)
+    else:
+        dataframe.to_csv(outputfile,index=False,sep=',',columns = columns)
