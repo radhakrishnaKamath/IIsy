@@ -19,15 +19,17 @@ all_flows = pd.read_csv(inputfile)
 
 for i in range(0,all_flows.shape[0]-1):
 	if all_flows.at[i,"size"] > (10*1024):
-		dataframe = pd.DataFrame({'ether_type':[all_flows.at[i,"ether_type"]],'src_ip':[all_flows.at[i,"src_ip"]],'dst_ip':[all_flows.at[i,"dst_ip"]],'tcp_sport':[all_flows.at[i,"tcp_sport"]],'tcp_dport':[all_flows.at[i,"tcp_dport"]],'udp_sport':[all_flows.at[i,"udp_sport"]],'udp_dport':[all_flows.at[i,"udp_dport"]],'proto':[all_flows.at[i,"proto"]],'size':[all_flows.at[i,"size"]],'count':[all_flows.at[i,"count"]],'class':1})
-		columns = ['ether_type','src_ip','dst_ip','tcp_sport','tcp_dport','udp_sport','udp_dport','proto','size','count','class']
+		all_flows.at[i,"size"] = all_flows.at[i,"size"]/1024
+		dataframe = pd.DataFrame({'tcp_sport':[all_flows.at[i,"tcp_sport"]],'tcp_dport':[all_flows.at[i,"tcp_dport"]],'udp_sport':[all_flows.at[i,"udp_sport"]],'udp_dport':[all_flows.at[i,"udp_dport"]],'proto':[all_flows.at[i,"proto"]],'size':[all_flows.at[i,"size"]],'count':[all_flows.at[i,"count"]],'class':1})
+		columns = ['tcp_sport','tcp_dport','udp_sport','udp_dport','proto','size','count','class']
 		if os.path.exists(outputfile):
 			dataframe.to_csv(outputfile,index=False,sep=',',mode='a',columns = columns, header=False)
 		else:
 			dataframe.to_csv(outputfile,index=False,sep=',',columns = columns)	
 	else:
-		dataframe = pd.DataFrame({'ether_type':[all_flows.at[i,"ether_type"]],'src_ip':[all_flows.at[i,"src_ip"]],'dst_ip':[all_flows.at[i,"dst_ip"]],'tcp_sport':[all_flows.at[i,"tcp_sport"]],'tcp_dport':[all_flows.at[i,"tcp_dport"]],'udp_sport':[all_flows.at[i,"udp_sport"]],'udp_dport':[all_flows.at[i,"udp_dport"]],'proto':[all_flows.at[i,"proto"]],'size':[all_flows.at[i,"size"]],'count':[all_flows.at[i,"count"]],'class':0})
-		columns = ['ether_type','src_ip','dst_ip','tcp_sport','tcp_dport','udp_sport','udp_dport','proto','size','count','class']
+		all_flows.at[i,"size"] = all_flows.at[i,"size"]/1024
+		dataframe = pd.DataFrame({'tcp_sport':[all_flows.at[i,"tcp_sport"]],'tcp_dport':[all_flows.at[i,"tcp_dport"]],'udp_sport':[all_flows.at[i,"udp_sport"]],'udp_dport':[all_flows.at[i,"udp_dport"]],'proto':[all_flows.at[i,"proto"]],'size':[all_flows.at[i,"size"]],'count':[all_flows.at[i,"count"]],'class':0})
+		columns = ['tcp_sport','tcp_dport','udp_sport','udp_dport','proto','size','count','class']
 		if os.path.exists(outputfile):
 			dataframe.to_csv(outputfile,index=False,sep=',',mode='a',columns = columns, header=False)
 		else:

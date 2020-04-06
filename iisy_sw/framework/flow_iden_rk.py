@@ -149,10 +149,10 @@ results = (np.array(results))
 
 # store the features in the dataframe
 
-columns = ['ether_type','src_ip','dst_ip','tcp_sport','tcp_dport','udp_sport','udp_dport','proto','size','count','class']
+columns = ['tcp_sport','tcp_dport','udp_sport','udp_dport','proto','size','count','class']
 for i in results:
-    print(str(i[0]))
-    dataframe = pd.DataFrame({'ether_type':[i[0]],'src_ip':[i[1]],'dst_ip':[i[2]],'tcp_sport':[i[3]],'tcp_dport':[i[4]],'udp_sport':[i[5]],'udp_dport':[i[6]],'proto':[i[7]],'size':[i[8]],'count':[i[9]],'class':0})
+#    print(str(i[0]))
+    dataframe = pd.DataFrame({'tcp_sport':[i[3]],'tcp_dport':[i[4]],'udp_sport':[i[5]],'udp_dport':[i[6]],'proto':[i[7]],'size':[i[8]],'count':[i[9]],'class':0})
     # save the dataframe to the csv file, if not exsit, create one.
     if os.path.exists(outputfile):
         dataframe.to_csv(outputfile,index=False,sep=',',mode='a',columns = columns, header=False)

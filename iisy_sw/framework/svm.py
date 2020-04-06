@@ -93,16 +93,33 @@ Predict_Y = clf.predict(X)
 print(accuracy_score(Y, Predict_Y))
 
 Predict_Yt = clf.predict(Xt)
-print(accuracy_score(Yt, Predict_Yt))
 
-# output the model in a text file, wirte it
-coe = clf.coef_
-int = clf.intercept_
+e2e = 0
+e2m = 0
+m2e = 0
+m2m = 0
 
-model = open(outputfile,"w+")
-for i in range(len(coe)):
-    model.write("hyperplane = ")
-    model.write(str(coe[i][0]) + "x1 + "+ str(coe[i][1]) + "x2 + "+ str(coe[i][2])+ "x3 + " + str(int[i]))
-    model.write(";\n")
+for i in range(Predict_Yt.shape[0]):
+	if Yt[i] == Predict_Yt[i] and Yt[i] == 1:
+		e2e = e2e + 1
+	elif Yt[i] == Predict_Yt[i] and Yt[i] == 0:
+		m2m = m2m + 1
+	elif Yt[i] != Predict_Yt[i] and Yt[i] == 0 and Predict_Yt[i] == 1:
+		m2e = m2e + 1
+	elif Yt[i] != Predict_Yt[i] and Yt[i] == 1 and Predict_Yt[i] == 0:
+		e2m = e2m + 1
 
-model.close()
+print("e2e: " + str(e2e) + " m2m: " + str(m2m) + " m2e: " + str(m2e) + " e2m: " + str(e2m))
+# print(accuracy_score(Yt, Predict_Yt))
+
+# # output the model in a text file, wirte it
+# coe = clf.coef_
+# int = clf.intercept_
+
+# model = open(outputfile,"w+")
+# for i in range(len(coe)):
+#     model.write("hyperplane = ")
+#     model.write(str(coe[i][0]) + "x1 + "+ str(coe[i][1]) + "x2 + "+ str(coe[i][2])+ "x3 + " + str(int[i]))
+#     model.write(";\n")
+
+# model.close()
