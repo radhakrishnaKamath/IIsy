@@ -1,0 +1,8 @@
+/iisy_sw/framework/data/csv/
+/iisy_sw/framework/data/json/
+/iisy_sw/framework/data/txt/
+/iisy_sw/framework/data/pcap/
+
+*.json
+*.csv
+*.pcap
