@@ -10,69 +10,66 @@ do
 	cp ../../../../../wisc-data/"$2_pt$i" ../../data/pcap/
 done
 
-touch ../../data/csv/tmp0.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ1_pt1 -t ../../data/csv/tmp0.csv -o ../../data/csv/tmp1.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ1_pt2 -t ../../data/csv/tmp1.csv -o ../../data/csv/tmp2.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ1_pt3 -t ../../data/csv/tmp2.csv -o ../../data/csv/tmp3.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ1_pt4 -t ../../data/csv/tmp3.csv -o ../../data/csv/tmp4.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ1_pt5 -t ../../data/csv/tmp4.csv -o ../../data/csv/tmp5.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ1_pt6 -t ../../data/csv/tmp5.csv -o ../../data/csv/tmp6.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ1_pt7 -t ../../data/csv/tmp6.csv -o ../../data/csv/tmp7.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ1_pt8 -t ../../data/csv/tmp7.csv -o ../../data/csv/tmp8.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ1_pt9 -t ../../data/csv/tmp8.csv -o ../../data/csv/tmp9.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ1_pt10 -t ../../data/csv/tmp9.csv -o ../../data/csv/tmp10.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ1_pt11 -t ../../data/csv/tmp10.csv -o ../../data/csv/tmp11.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ1_pt12 -t ../../data/csv/tmp11.csv -o ../../data/csv/tmp12.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ1_pt13 -t ../../data/csv/tmp12.csv -o ../../data/csv/tmp13.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ1_pt14 -t ../../data/csv/tmp13.csv -o ../../data/csv/tmp14.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ1_pt15 -t ../../data/csv/tmp14.csv -o ../../data/csv/tmp15.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ1_pt16 -t ../../data/csv/tmp15.csv -o ../../data/csv/tmp16.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ1_pt17 -t ../../data/csv/tmp16.csv -o ../../data/csv/tmp17.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ1_pt18 -t ../../data/csv/tmp17.csv -o ../../data/csv/tmp18.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ1_pt19 -t ../../data/csv/tmp18.csv -o ../../data/csv/tmp19.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ1_pt20 -t ../../data/csv/tmp19.csv -o ../../data/csv/univ1_flow.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ2_pt0 -t ../../data/csv/tmp0.csv -o ../../data/csv/tmp20.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ2_pt1 -t ../../data/csv/tmp20.csv -o ../../data/csv/tmp21.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ2_pt2 -t ../../data/csv/tmp21.csv -o ../../data/csv/tmp22.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ2_pt3 -t ../../data/csv/tmp22.csv -o ../../data/csv/tmp23.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ2_pt4 -t ../../data/csv/tmp23.csv -o ../../data/csv/tmp24.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ2_pt5 -t ../../data/csv/tmp24.csv -o ../../data/csv/tmp25.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ2_pt6 -t ../../data/csv/tmp25.csv -o ../../data/csv/tmp26.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ2_pt7 -t ../../data/csv/tmp26.csv -o ../../data/csv/tmp27.csv
-date
-python2 flow_form_rk.py -i ../../data/pcap/univ2_pt8 -t ../../data/csv/tmp27.csv -o ../../data/csv/univ2_flow.csv
-date
+
+#python2 flow_iden_rk.py -i ../../data/pcap/univ1_pt1 -o ../../data/csv/univ1_flow1.csv & 
+
+#python2 flow_iden_rk.py -i ../../data/pcap/univ1_pt2 -o ../../data/csv/univ1_flow2.csv &
+
+#python2 flow_iden_rk.py -i ../../data/pcap/univ1_pt3 -o ../../data/csv/univ1_flow3.csv &
+
+#python2 flow_iden_rk.py -i ../../data/pcap/univ1_pt4 -o ../../data/csv/univ1_flow4.csv &
+
+#python2 flow_iden_rk.py -i ../../data/pcap/univ1_pt5 -o ../../data/csv/univ1_flow5.csv &
+
+#python2 flow_iden_rk.py -i ../../data/pcap/univ1_pt6 -o ../../data/csv/univ1_flow6.csv 
+
+#python2 flow_iden_rk.py -i ../../data/pcap/univ1_pt7 -o ../../data/csv/univ1_flow7.csv &
+
+#python2 flow_iden_rk.py -i ../../data/pcap/univ1_pt8 -o ../../data/csv/univ1_flow8.csv &
+
+#python2 flow_iden_rk.py -i ../../data/pcap/univ1_pt9 -o ../../data/csv/univ1_flow9.csv &
+
+#python2 flow_iden_rk.py -i ../../data/pcap/univ1_pt10 -o ../../data/csv/univ1_flow10.csv &
+
+#python2 flow_iden_rk.py -i ../../data/pcap/univ1_pt11 -o ../../data/csv/univ1_flow11.csv &
+
+#python2 flow_iden_rk.py -i ../../data/pcap/univ1_pt12 -o ../../data/csv/univ1_flow12.csv 
+
+#python2 flow_iden_rk.py -i ../../data/pcap/univ1_pt13 -o ../../data/csv/univ1_flow13.csv &
+
+#python2 flow_iden_rk.py -i ../../data/pcap/univ1_pt14 -o ../../data/csv/univ1_flow14.csv &
+
+#python2 flow_iden_rk.py -i ../../data/pcap/univ1_pt15 -o ../../data/csv/univ1_flow15.csv &
+
+#python2 flow_iden_rk.py -i ../../data/pcap/univ1_pt16 -o ../../data/csv/univ1_flow16.csv &
+
+#python2 flow_iden_rk.py -i ../../data/pcap/univ1_pt17 -o ../../data/csv/univ1_flow17.csv &
+
+#python2 flow_iden_rk.py -i ../../data/pcap/univ1_pt18 -o ../../data/csv/univ1_flow18.csv &
+
+#python2 flow_iden_rk.py -i ../../data/pcap/univ1_pt19 -o ../../data/csv/univ1_flow19.csv &
+
+#python2 flow_iden_rk.py -i ../../data/pcap/univ1_pt20 -o ../../data/csv/univ1_flow20.csv
+
+python2 flow_iden_rk.py -i ../../data/pcap/univ2_pt0 -o ../../data/csv/univ2_flow0.csv
+
+python2 flow_iden_rk.py -i ../../data/pcap/univ2_pt1 -o ../../data/csv/univ2_flow1.csv
+
+python2 flow_iden_rk.py -i ../../data/pcap/univ2_pt2 -o ../../data/csv/univ2_flow2.csv
+
+python2 flow_iden_rk.py -i ../../data/pcap/univ2_pt3 -o ../../data/csv/univ2_flow3.csv
+
+python2 flow_iden_rk.py -i ../../data/pcap/univ2_pt4 -o ../../data/csv/univ2_flow4.csv
+
+python2 flow_iden_rk.py -i ../../data/pcap/univ2_pt5 -o ../../data/csv/univ2_flow5.csv
+
+python2 flow_iden_rk.py -i ../../data/pcap/univ2_pt6 -o ../../data/csv/univ2_flow6.csv
+
+python2 flow_iden_rk.py -i ../../data/pcap/univ2_pt7 -o ../../data/csv/univ2_flow7.csv
+
+python2 flow_iden_rk.py -i ../../data/pcap/univ2_pt8 -o ../../data/csv/univ2_flow8.csv
 
 
-rm ../../data/csv/tmp*
 
 # python2 flow_iden_rk.py -a1 $1 -a2 $3 -a3 $4 &
 # python2 flow_iden_rk.py -a1 $2 -a2 $5 -a3 $6
