@@ -18,7 +18,7 @@ outputfile = args.o
 
 #read the pcap file and extract the features for each packet
 results = []
-columns = ['src_ip','dst_ip','tcp_sport','tcp_dport','udp_sport','udp_dport','proto','size','count','class']
+columns = ['src_ip','dst_ip','tcp_sport','tcp_dport','udp_sport','udp_dport','proto','size','count','int_arr_time','start_time','last_time','class']
 # cnt = 0
 print(inputfile + " " + outputfile + " " + str(datetime.datetime.now()))
 
@@ -70,7 +70,7 @@ for packet in all_packets:
             dport = 0
         sport = int(sport)
         dport = int(dport)
-
+    time = packet.time
     flag = 0
     
     if eth_type==2048:
@@ -85,7 +85,10 @@ for packet in all_packets:
                                         if proto == results[i][7]:
                                             size = size - (ihl*4 + 20)
                                             results[i][8] = results[i][8] + size
+                                            avg_iat = (results[i][10]*results[i][9] + (time - results[i][12]))/(results[i][9] + 1)
+                                            results[i][10] = avg_iat
                                             results[i][9] = results[i][9] + 1
+                                            results[i][12] = time
                                             flag = 1
                                             break
                                         else:
@@ -100,7 +103,10 @@ for packet in all_packets:
                                         if proto == results[i][7]:
                                             size = size - (ihl*4 + 8)
                                             results[i][8] = results[i][8] + size
+                                            avg_iat = (results[i][10]*results[i][9] + (time - results[i][12]))/(results[i][9] + 1)
+                                            results[i][10] = avg_iat
                                             results[i][9] = results[i][9] + 1
+                                            results[i][12] = time
                                             flag = 1
                                             break
                                         else:
@@ -117,17 +123,17 @@ for packet in all_packets:
                         continue
                 if flag == 0:
                     if proto == 6:
-                        metric = [eth_type,src_ip,dst_ip,sport,dport,0,0,proto,size,1]
+                        metric = [eth_type,src_ip,dst_ip,sport,dport,0,0,proto,size,1,0,time,time]
                     elif proto == 17:
-                        metric = [eth_type,src_ip,dst_ip,0,0,sport,dport,proto,size,1]
+                        metric = [eth_type,src_ip,dst_ip,0,0,sport,dport,proto,size,1,0,time,time]
                     else:
                         continue
                     results.append(metric)
             else:
                 if proto == 6:
-                    metric = [eth_type,src_ip,dst_ip,sport,dport,0,0,proto,size,1]
+                    metric = [eth_type,src_ip,dst_ip,sport,dport,0,0,proto,size,1,0,time,time]
                 elif proto == 17:
-                    metric = [eth_type,src_ip,dst_ip,0,0,sport,dport,proto,size,1]
+                    metric = [eth_type,src_ip,dst_ip,0,0,sport,dport,proto,size,1,0,time,time]
                 else:
                     continue
                 results.append(metric)
@@ -136,7 +142,7 @@ results = (np.array(results))
 # store the features in the dataframe
 
 for i in results:
-    dataframe = pd.DataFrame({'src_ip':[i[1]],'dst_ip':[i[2]],'tcp_sport':[i[3]],'tcp_dport':[i[4]],'udp_sport':[i[5]],'udp_dport':[i[6]],'proto':[i[7]],'size':[i[8]],'count':[i[9]],'class':0})
+    dataframe = pd.DataFrame({'src_ip':[i[1]],'dst_ip':[i[2]],'tcp_sport':[i[3]],'tcp_dport':[i[4]],'udp_sport':[i[5]],'udp_dport':[i[6]],'proto':[i[7]],'size':[i[8]],'count':[i[9]],'int_arr_time':[i[10]],'start_time':[i[11]],'last_time':[i[12]],'class':0})
     # save the dataframe to the csv file, if not exsit, create one.
     if os.path.exists(outputfile):
         dataframe.to_csv(outputfile,index=False,sep=',',mode='a',columns = columns, header=False)

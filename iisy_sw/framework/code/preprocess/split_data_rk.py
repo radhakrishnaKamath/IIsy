@@ -32,10 +32,17 @@ test_ratio = test_val_ratio/2
 test_ratio = int(test_ratio)
 val_ratio = test_val_ratio - test_ratio
 
+train_limit = train_ratio
+val_limit = train_limit + val_ratio
 
-class_flows_train = class_flows.iloc[:train_ratio, :]
-class_flows_val = class_flows.iloc[train_ratio:val_ratio, :]
-class_flows_test = class_flows.iloc[val_ratio:, :]
+print("train: " + str(train_ratio))
+print("test_val: " + str(test_val_ratio))
+print("test: " + str(test_ratio))
+print("val: " + str(val_ratio))
+
+class_flows_train = class_flows.iloc[:train_limit, :]
+class_flows_val = class_flows.iloc[train_limit:val_limit, :]
+class_flows_test = class_flows.iloc[val_limit:, :]
 
 # class_flows_test.columns = columns
 
