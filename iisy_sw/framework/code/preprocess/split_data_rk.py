@@ -20,7 +20,7 @@ val_outputfile = args.otv
 
 class_flows = pd.read_csv(inputfile)
 
-columns = ['src_ip','dst_ip','tcp_sport','tcp_dport','udp_sport','udp_dport','proto','size','count','class']
+columns = ['src_ip','dst_ip','tcp_sport','tcp_dport','udp_sport','udp_dport','proto','size','count','int_arr_time','start_time','last_time','class']
 
 class_flows = class_flows.sample(frac = 1).reset_index(drop=True)
 

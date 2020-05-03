@@ -20,7 +20,7 @@ first_keyword = args.a1
 second_keyword = args.a2
 outputfile = args.o
 
-columns = ['src_ip','dst_ip','tcp_sport','tcp_dport','udp_sport','udp_dport','proto','size','count','class']
+columns = ['src_ip','dst_ip','tcp_sport','tcp_dport','udp_sport','udp_dport','proto','size','count','int_arr_time','start_time','last_time','class']
 
 for i in [1,2]:
 	if i == 1:
@@ -30,7 +30,7 @@ for i in [1,2]:
 	flows_df = pd.read_csv(path)
 	flows = flows_df.to_numpy()
 	for flow in flows:
-		dataframe = pd.DataFrame({'src_ip':[flow[0]],'dst_ip':[flow[1]],'tcp_sport':[flow[2]],'tcp_dport':[flow[3]],'udp_sport':[flow[4]],'udp_dport':[flow[5]],'proto':[flow[6]],'size':[flow[7]],'count':[flow[8]],'class':[flow[9]]})
+		dataframe = pd.DataFrame({'src_ip':[flow[0]],'dst_ip':[flow[1]],'tcp_sport':[flow[2]],'tcp_dport':[flow[3]],'udp_sport':[flow[4]],'udp_dport':[flow[5]],'proto':[flow[6]],'size':[flow[7]],'count':[flow[8]],'int_arr_time':[flow[9]],'start_time':[flow[10]],'last_time':[flow[11]],'class':[flow[12]]})
 		# save the dataframe to the csv file, if not exsit, create one.
 		if os.path.exists(outputfile):
 			dataframe.to_csv(outputfile,index=False,sep=',',mode='a',columns = columns, header=False)
