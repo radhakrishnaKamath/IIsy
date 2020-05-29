@@ -1,9 +1,10 @@
 import numpy as np
 import pandas as pd
 import argparse
-# import pydotplus
-from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
+from sklearn.tree import export_graphviz
+import pydotplus
 
 parser = argparse.ArgumentParser()
 
@@ -31,7 +32,7 @@ Xt = [i[2:10] for i in Set]
 Yt = [i[12] for i in Set]
 
 class_names = ['elephant','mouse']
-feature_names = ['tcp_sport','tcp_dport','udp_sport','udp_dport','proto','size','count']
+feature_names = ['tcp_sport','tcp_dport','udp_sport','udp_dport','proto','size','count','int_arr_time']
 
 # prepare training and testing set
 X = np.array(X)
@@ -39,13 +40,13 @@ Y = np.array(Y)
 Xt = np.array(Xt)
 Yt = np.array(Yt)
 
-log_reg = LogisticRegression()
-log_reg.fit(X,Y)
-
-Predict_Y = log_reg.predict(X)
+# decision tree fit
+rf = RandomForestClassifier(n_estimators = 2)
+rf.fit(X, Y)
+Predict_Y = rf.predict(X)
 print(accuracy_score(Y, Predict_Y))
 
-Predict_Yt = log_reg.predict(Xt)
+Predict_Yt = rf.predict(Xt)
 
 e2e = 0
 e2m = 0
@@ -63,4 +64,3 @@ for i in range(Predict_Yt.shape[0]):
 		e2m = e2m + 1
 
 print("e2e: " + str(e2e) + " m2m: " + str(m2m) + " m2e: " + str(m2e) + " e2m: " + str(e2m))
-
