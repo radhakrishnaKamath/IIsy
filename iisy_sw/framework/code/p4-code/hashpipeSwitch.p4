@@ -154,7 +154,7 @@ control MyIngress(inout headers hdr,
 
     action do_stage2(){
         // hash using my custom function 
-        hash(track_meta.mIndex, HashAlgorithm.crc16, (bit<32>)0, {hdr.ipv4.srcAddr}, (bit<32>)32);
+        hash(track_meta.mIndex, HashAlgorithm.crc16, (bit<32>)0, {track_meta.mKeyCarried}, (bit<32>)32);
 
         // read the key and value at that location
         flow_tracker_stage2.read(track_meta.mKeyInTable, track_meta.mIndex);
@@ -179,7 +179,7 @@ control MyIngress(inout headers hdr,
 
     action do_stage3(){
         // hash using my custom function 
-        hash(track_meta.mIndex, HashAlgorithm.crc16, (bit<32>)0, {hdr.ipv4.srcAddr}, (bit<32>)32);
+        hash(track_meta.mIndex, HashAlgorithm.crc16, (bit<32>)0, {track_meta.mKeyCarried}, (bit<32>)32);
 
         // read the key and value at that location
         flow_tracker_stage3.read(track_meta.mKeyInTable, track_meta.mIndex);
@@ -204,7 +204,7 @@ control MyIngress(inout headers hdr,
 
     action do_stage4(){
         // hash using my custom function 
-        hash(track_meta.mIndex, HashAlgorithm.crc16, (bit<32>)0, {hdr.ipv4.srcAddr}, (bit<32>)32);
+        hash(track_meta.mIndex, HashAlgorithm.crc16, (bit<32>)0, {track_meta.mKeyCarried}, (bit<32>)32);
 
         // read the key and value at that location
         flow_tracker_stage4.read(track_meta.mKeyInTable, track_meta.mIndex);

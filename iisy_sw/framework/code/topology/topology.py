@@ -39,20 +39,20 @@ class FatTree(Topo):
 		self.aggregation_number = (switch_port/2)*self.pods
 		self.edge_number = (switch_port/2)*self.pods
 		self.hosts_number = (switch_port**3)/4
-                self.sw_path1 = sw_path1
+		self.sw_path1 = sw_path1
 		self.json_path1 = json_path1
 		self.sw_path2 = sw_path2
 		self.json_path2 = json_path2
 		self.thrift_port = thrift_port
 		self.pcap_dump = pcap_dump
-                self.core_switch_names = []
-                self.core_switch = []
-                self.aggregation_switch_names = []
-                self.aggregation_switch = []
-                self.edge_switch_names = []
-                self.edge_switch = []
-                self.host_names = []
-                self.hosts_item = []
+		self.core_switch_names = []
+		self.core_switch = []
+		self.aggregation_switch_names = []
+		self.aggregation_switch = []
+		self.edge_switch_names = []
+		self.edge_switch = []
+		self.host_names = []
+		self.hosts_item = []
 		Topo.__init__(self)
 
 	def CreateNodes(self):
@@ -72,10 +72,10 @@ class FatTree(Topo):
 				prefix = pref
 			name_list.append(prefix + str(i))
 			switch_list.append(self.addSwitch(prefix + str(i),
-			sw_path = sw_path, 
-			json_path = json_path, 
-			thrift_port = thrift_port, 
-			pcap_dump = pcap_dump))
+											  sw_path = sw_path, 
+											  json_path = json_path, 
+											  thrift_port = thrift_port, 
+											  pcap_dump = pcap_dump))
 
 	def FormCoreSwitch(self, core_count, sw_path, json_path, thrift_port, pcap_dump):
 		self.FormSwitch(core_count, "cs", self.core_switch_names, self.core_switch, sw_path, json_path, thrift_port, pcap_dump)
@@ -93,22 +93,22 @@ class FatTree(Topo):
 		addr3 = 1
 
 		for i in xrange(1, host_count+1):
-                        if i > 0 and i < 10:
-                                prefix = pref + "000000"
-			elif i > 9 and i < 100:
+			if i > 0 and i < 10:
+				prefix = pref + "000000"
+			if i > 9 and i < 100:
 				prefix = pref + "00000"
-			elif i > 99 and i < 1000:
+			elif i > 99 and i < 999:
 				prefix = pref + "0000"
-			elif i > 999 and i < 10000:
+			elif i > 999 and i < 9999:
 				prefix = pref + "000"
-			elif i > 9999 and i < 100000:
+			elif i > 9999 and i < 99999:
 				prefix = pref + "00"
-			elif i > 99999 and i < 1000000:
+			elif i > 99999 and i < 999999:
 				prefix = pref + "0"
 			else:
 				prefix = pref
 			self.host_names.append(prefix + str(i))
-			self.hosts_item.append(self.addHost(prefix + str(i),
+			self.hosts.append(self.addHost(prefix + str(i),
 							ip = "10.%d.%d.%d" % (addr1,addr2,addr3),
 							mac = "00:00:00:%2x:%2x:%2x" % (addr1,addr2,addr3)))
 			addr3 = addr3 + 1
@@ -121,34 +121,30 @@ class FatTree(Topo):
 			
 	def FormLinks(self):
 
-		bw_e2h = 1
-		bw_a2e = 10
-		bw_c2a = 10
-
 		# Core to Aggregation switch
 		core_ind = 0
 		for i in xrange(self.aggregation_number):
 			for j in xrange(self.pods/2):
-                                print(core_ind)
 				self.addLink(self.core_switch[(core_ind + j)],
 							self.aggregation_switch[i])
-			core_ind = core_ind + 1
+			core_ind = core_ind + self.pods/2
 			if (i+1) % self.pods/2 == 0:
 				core_ind = 0
 		# Aggregation to Edge switch
 		aggregation_ind = 0
-		for i in xrange(self.edge_number):
+		for i in xrange(self.pods):
 			for j in xrange(self.pods/2):
-                            self.addLink(self.aggregation_switch[(aggregation_ind + j)],
-							self.edge_switch[i])
-                        if (i+1) % self.pods/2 == 0:
-			    aggregation_ind = aggregation_ind + self.pods/2
+				for k in xrange(self.pods/2):
+					self.addLink(self.aggregation_switch[(i*2 + j)],
+								self.edge_switch[i*2 + k])
+			if (i+1) % self.pods/2 == 0:
+				aggregation_ind = aggregation_ind + self.pods/2
 		# Edge to Hosts
 		host_ind = 0
 		for i in xrange(self.edge_number):
 			for j in xrange(self.pods/2):
 				self.addLink(self.edge_switch[i],
-							self.hosts_item[host_ind + j])
+							self.hosts[host_ind + j])
 			host_ind = host_ind + self.pods/2
 
 def main():

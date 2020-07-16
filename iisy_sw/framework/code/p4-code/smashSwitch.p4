@@ -158,10 +158,11 @@ control MyIngress(inout headers hdr,
 	register<bit<32>>(1024) flow_size;
 	register<bit<48>>(1024) flow_iat;
 	register<bit<48>>(1024) flow_last_time;
-register<bit<32>>(16)   drops_register;
+    register<bit<32>>(16)   drops_register;
     register<bit<1>>(16)    drops_register_enabled;
     
 	bit<48> arrival_time;
+    bit<48> avg_time;
 	bit<48> time_threshold = (bit<48>)10;
 	bit<32> size;
 	bit<32> new_size;
@@ -173,7 +174,7 @@ register<bit<32>>(16)   drops_register;
     action hash_and_store(ip4Addr_t ipAddr1, ip4Addr_t ipAddr2, bit<16> port11, bit<16> port12, bit<16> port21, bit<16> port22){
         // first table stage
         
-		size = (hdr.ipv4.protocol == 0x06) ? (bit<32>)(hdr.ipv4.totalLen - (bit<16>)20 - (bit<16>)20) : (bit<32>)(hdr.ipv4.totalLen - (bit<16>)20 - (bit<16>)8);
+		size = (hdr.ipv4.protocol == 0x06) ? (bit<32>)(hdr.ipv4.totalLen - (bit<16>)hdr.ipv4.minSizeInBytes() - (bit<16>)hdr.tcp.minSizeInBytes()) : (bit<32>)(hdr.ipv4.totalLen - (bit<16>)hdr.ipv4.minSizeInBytes() - (bit<16>)hdr.ipv4.udpminSizeInBytes());
 		arrival_time = standard_metadata.ingress_global_timestamp;
 
         // hash using my custom function 
@@ -209,7 +210,7 @@ register<bit<32>>(16)   drops_register;
         packet_counter.write(track_meta.mIndex, ((track_meta.mSwapSpace == 0 && new_flow == 0) ? (bit<32>)(track_meta.mCountInTable + 1) : (bit<32>)1));
 		flow_size.write(track_meta.mIndex, ((track_meta.mSwapSpace == 0 && new_flow == 0) ? (bit<32>)(track_meta.mSizeInTable + size) : (bit<32>)size));
 		flow_last_time.write(track_meta.mIndex, arrival_time);
-		flow_iat.write(track_meta.mIndex, ((track_meta.mSwapSpace == 0 && new_flow == 0) ? (bit<48>)(arrival_time - track_meta.mLastTimeInTable) : (bit<48>)0));
+		flow_iat.write(track_meta.mIndex, ((track_meta.mSwapSpace == 0 && new_flow == 0) ? (bit<48>)((arrival_time - track_meta.mLastTimeInTable) + track_meta.mIatInTable) : (bit<48>)0));
 
 		//check if the flow size is greater than the size_threshold
 		flow_size.read(new_size, track_meta.mIndex);
@@ -222,6 +223,21 @@ register<bit<32>>(16)   drops_register;
 		track_meta.mIatCurrent 		= track_meta.mIatInTable;
     }
 
+    action get_average(bit<48> a, bit<32> b) {
+        avg_time = (b < (bit<32>)2) ? 
+            a : ((b >= (bit<32>)2 && b < (bit<32>)4) ? 
+                (a >> 1) : ((b >= (bit<32>)4 && b < (bit<32>)8) ? 
+                    (a >> 2) : ((b >= (bit<32>)8 && b < (bit<32>)16) ? 
+                        (a >> 3) : ((b >= (bit<32>)16 && b < (bit<32>)32) ? 
+                            (a >> 4) : ((b >= (bit<32>)32 && b < (bit<32>)64) ? 
+                                (a >> 5) : ((b >= (bit<32>)64 && b < (bit<32>)128) ? 
+                                    (a >> 6) : ((b >= (bit<32>)128 && b < (bit<32>)256) ? 
+                                        (a >> 7) : ((b >= (bit<32>)256 && b < (bit<32>)512) ? 
+                                            (a >> 8) : ((b >= (bit<32>)512 && b < (bit<32>)1024) ? (a >> 9) : (a >> 10))))))))));
+    }
+
+/*
+*/
     action send_to_classify() {
 
     }
@@ -262,8 +278,8 @@ register<bit<32>>(16)   drops_register;
             } else {
                 hash_and_store(hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, (bit<16>)0, (bit<16>)0, hdr.udp.srcPort, hdr.udp.dstPort);
             }
-            if (new_flow == 0) {
-                if (size_overflow == 0) {
+            if (new_flow == 1) {
+                if (size_overflow == 1) {
                     //send_to_classify();
                 }
             }

@@ -208,7 +208,7 @@ control MyIngress(inout headers hdr,
 
     action hash1(ip4Addr_t ipAddr1, ip4Addr_t ipAddr2, bit<16> port1, bit<16> port2){
         
-        size = (hdr.ipv4.protocol == 0x06) ? (bit<32>)(hdr.ipv4.totalLen - (bit<16>)20 - (bit<16>)20) : (bit<32>)(hdr.ipv4.totalLen - (bit<16>)20 - (bit<16>)8);
+        size = (hdr.ipv4.protocol == 0x06) ? (bit<32>)(hdr.ipv4.totalLen - (bit<16>)hdr.ipv4.minSizeInBytes() - (bit<16>)hdr.tcp.minSizeInBytes()) : (bit<32>)(hdr.ipv4.totalLen - (bit<16>)hdr.ipv4.minSizeInBytes() - (bit<16>)hdr.udp.minSizeInBytes());
 		arrival_time = standard_metadata.ingress_global_timestamp;
 
         // hashing the 5 tuple
@@ -232,7 +232,7 @@ control MyIngress(inout headers hdr,
 
     action hash2(ip4Addr_t ipAddr1, ip4Addr_t ipAddr2, bit<16> port1, bit<16> port2){
         
-        size = (hdr.ipv4.protocol == 0x06) ? (bit<32>)(hdr.ipv4.totalLen - (bit<16>)20 - (bit<16>)20) : (bit<32>)(hdr.ipv4.totalLen - (bit<16>)20 - (bit<16>)8);
+        size = (hdr.ipv4.protocol == 0x06) ? (bit<32>)(hdr.ipv4.totalLen - (bit<16>)hdr.ipv4.minSizeInBytes() - (bit<16>)hdr.tcp.minSizeInBytes()) : (bit<32>)(hdr.ipv4.totalLen - (bit<16>)hdr.ipv4.minSizeInBytes() - (bit<16>)hdr.udp.minSizeInBytes());
 		arrival_time = standard_metadata.ingress_global_timestamp;
 
         // hashing the 5 tuple
@@ -302,7 +302,7 @@ control MyIngress(inout headers hdr,
 		packet_last_time_stage4.write(track_meta.mIndex, arrival_time);
     }
 
-    action classify(ip4Addr_t ipAddr1, ip4Addr_t ipAddr2, bit<16> port1, bit<16> port2){
+    action check_flow(ip4Addr_t ipAddr1, ip4Addr_t ipAddr2, bit<16> port1, bit<16> port2){
         hash(key1, HashAlgorithm.crc16, (bit<32>)0, {ipAddr1, ipAddr2, port1, port2, hdr.ipv4.protocol}, (bit<32>)32);
         hash(key2, HashAlgorithm.crc32, (bit<32>)0, {ipAddr1, ipAddr2, port1, port2, hdr.ipv4.protocol}, (bit<32>)32);
         hash(key3, HashAlgorithm.csum16, (bit<32>)0, {ipAddr1, ipAddr2, port1, port2, hdr.ipv4.protocol}, (bit<32>)32);
@@ -313,8 +313,10 @@ control MyIngress(inout headers hdr,
         bloom_filter.read(val3, key3);
         bloom_filter.read(val4, key4);
 
-        f = (val1 != 1 || val2 != 1 || val3 != 1 || val4 != 1) ? 0 : 1;
+        f = (val1 != 1 || val2 != 1 || val3 != 1 || val4 != 1) ? (bit<1>)0 : (bit<1>)1;        
+    }
 
+    action classify_flow() {
         packet_size_stage1.read(size1, key1);
         packet_size_stage2.read(size2, key2);
         packet_size_stage3.read(size3, key3);
@@ -335,7 +337,7 @@ control MyIngress(inout headers hdr,
         bloom_filter.write(key2, ((size_overflow == 1 && duration_overflow == 1) ? (bit<1>)1 : (bit<1>)0));
         bloom_filter.write(key3, ((size_overflow == 1 && duration_overflow == 1) ? (bit<1>)1 : (bit<1>)0));
         bloom_filter.write(key4, ((size_overflow == 1 && duration_overflow == 1) ? (bit<1>)1 : (bit<1>)0));
-    }   
+    }
 
 	action drop() {
         mark_to_drop(standard_metadata);
@@ -369,13 +371,19 @@ control MyIngress(inout headers hdr,
                 hash2(hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, hdr.tcp.srcAddr, hdr.tcp.dstAddr);
                 hash3(hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, hdr.tcp.srcAddr, hdr.tcp.dstAddr);
                 hash4(hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, hdr.tcp.srcAddr, hdr.tcp.dstAddr);
-                classify(hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, hdr.tcp.srcAddr, hdr.tcp.dstAddr);
+                check_flow(hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, hdr.tcp.srcAddr, hdr.tcp.dstAddr);
+                if (f == (bit<1>)1) {
+                    classify_flow();
+                }
             } else {
                 hash1(hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, hdr.udp.srcAddr, hdr.udp.dstAddr);
                 hash2(hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, hdr.udp.srcAddr, hdr.udp.dstAddr);
                 hash3(hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, hdr.udp.srcAddr, hdr.udp.dstAddr);
                 hash4(hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, hdr.udp.srcAddr, hdr.udp.dstAddr);
-                classify(hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, hdr.udp.srcAddr, hdr.udp.dstAddr);
+                check_flow(hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, hdr.udp.srcAddr, hdr.udp.dstAddr);
+                if (f == (bit<1>)1) {
+                    classify_flow();
+                }
             }
 		}
 	}
