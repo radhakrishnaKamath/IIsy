@@ -8,7 +8,7 @@ parser.add_argument('-s', required=True, help='server number')
 args = parser.parse_args()
 
 # extract argument value
-server_no = args.s
+server_no = int(args.s)
 
 url1 = "https://data.caida.org/datasets/passive-2019/equinix-nyc/20190117-130000.UTC/"
 
